@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiFit Homepage</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Title -->
+    <header>
+        <h1>OptiFit</h1>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar (Calendar and Chat) -->
+        <div class="sidebar">
+            <!-- FullCalendar -->
+            <div id="calendar"></div>
+            <!-- Chat Box -->
+            <div class="chat-box">
+                <h2>Chat</h2>
+                <div class="chat-content">
+                    <!-- Chat messages will go here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message..." />
+                    <button type="button">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Two Squares that Change -->
+            <div class="square-container">
+                <h3>My Data:</h3>
+                <div class="square" id="square-1">
+                    <div class="square-content" id="data-content"></div>
+                </div>
+                <h3 id="workout-title"></h3>
+                <div class="square" id="square-2">
+                    <div class="square-content" id="workout-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
