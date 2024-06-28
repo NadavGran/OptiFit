@@ -1,7 +1,7 @@
 {
   "name": "optifit",
   "version": "1.0.0",
-  "description": "",
+  "description": "To get started with the project, follow these steps: 1. **Clone the Repository:**    ```sh    git clone <repository-url>    cd my-web-application",
   "main": "index.js",
   "type": "module",
   "license": "AGPL-version-3.0",
@@ -17,20 +17,21 @@
   },
   "bugs": "",
   "keywords": [],
-  "author": {
-    "name": "Nadav Granot",
-    "email": "ngranot@umass.edu"
-  },
-  "contributors": [
-
-  ],
+  "author": "Nadav Granot <ngranot@umass.edu>",
+  "contributors": [],
   "scripts": {
-    "start": "http-server src/frontend -p 3000 -c-1 -o -s"
+    "start": "node src/backend/server.js",
+    "serve": "http-server src/frontend -p 3000 -c-1 -o -s",
+    "submit": "node js/submit.js"
   },
   "dependencies": {
-
-  },
-  "devDependencies": {
-
+    "archiver": "^6.0.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-pouchdb": "^4.2.0",
+    "http-server": "^14.1.1",
+    "node-fetch": "^2.6.7",
+    "pouchdb": "^9.0.0"
   }
 }
