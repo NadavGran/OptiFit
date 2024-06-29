@@ -120,6 +120,7 @@ input:checked + .slider:before {
     flex: 1; /* Allow chat box to fill remaining space */
     display: flex;
     flex-direction: column;
+    height: 400px; /* Increase the height of the chat box */
 }
 
 .chat-box h2 {
@@ -128,11 +129,48 @@ input:checked + .slider:before {
 
 .chat-content {
     flex: 1;
-    overflow-y: scroll;
+    overflow-y: scroll; /* Enable vertical scrolling */
     border: 1px solid #ccc;
     padding: 1em;
     margin-bottom: 1em;
     background-color: #fff; /* Ensure chat content background is white */
+}
+
+.chat-message {
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    border-radius: 5px;
+    position: relative;
+}
+
+.coach-message {
+    background-color: #f1f1f1;
+    text-align: left;
+}
+
+.athlete-message {
+    background-color: #d4edda;
+    text-align: right;
+}
+
+.coach-message .delete-button {
+    right: 5px;
+    left: auto;
+}
+
+.athlete-message .delete-button {
+    left: 5px;
+    right: auto;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 0.9em;
+    position: absolute;
+    top: 5px;
+    cursor: pointer;
 }
 
 .chat-input {

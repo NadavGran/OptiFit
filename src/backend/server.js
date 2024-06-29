@@ -1,3 +1,4 @@
+// server.js (backend)
 import express from 'express';
 import PouchDB from 'pouchdb';
 import cors from 'cors';
@@ -24,6 +25,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
+// Endpoint to get data for a specific date
 app.get('/api/data/:date', async (req, res) => {
   const date = req.params.date;
   try {
@@ -62,6 +64,7 @@ app.get('/api/data/:date', async (req, res) => {
   }
 });
 
+// Endpoint to update data for a specific date
 app.put('/api/data/:date', async (req, res) => {
   const date = req.params.date;
   try {
@@ -83,6 +86,54 @@ app.put('/api/data/:date', async (req, res) => {
     res.status(200).json(updatedDoc);
   } catch (error) {
     console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Chat endpoints
+app.get('/api/chat', async (req, res) => {
+  try {
+    const result = await db.allDocs({ include_docs: true });
+    const chatMessages = result.rows.filter(row => row.doc.type === 'chat').map(row => row.doc);
+    res.status(200).json(chatMessages);
+  } catch (error) {
+    console.error('Error fetching chat messages:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const newMessage = { _id: new Date().toISOString(), ...req.body, type: 'chat' };
+    await db.put(newMessage);
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.error('Error adding chat message:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.put('/api/chat/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const message = await db.get(id);
+    const updatedMessage = { ...message, ...req.body };
+    await db.put(updatedMessage);
+    res.status(200).json(updatedMessage);
+  } catch (error) {
+    console.error('Error updating chat message:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.delete('/api/chat/:id', async (req, res) => {
+  const id = req.params.id;
+  try {
+    const message = await db.get(id);
+    await db.remove(message);
+    res.status(200).json({ message: 'Deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting chat message:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

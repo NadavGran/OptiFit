@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     var viewToggle = document.getElementById('view-toggle');
     var athleteContentArea = document.getElementById('athlete-content-area');
     var coachContentArea = document.getElementById('coach-content-area');
+    var chatContent = document.querySelector('.chat-content');
+    var chatInput = document.querySelector('.chat-input input');
+    var sendButton = document.querySelector('.chat-input button');
 
     // Initialize the calendar
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -51,6 +54,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             athleteContentArea.style.display = 'block';
             coachContentArea.style.display = 'none';
         }
+        loadChatMessages(); // Reload chat messages when toggling views
     });
 
     // Function to update squares with data
@@ -153,4 +157,88 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else {
         initializePage();
     }
+
+    // Chat functionalities
+    async function loadChatMessages() {
+        try {
+            const response = await fetch('/api/chat');
+            if (response.ok) {
+                const messages = await response.json();
+                displayChatMessages(messages);
+            } else {
+                console.error('Failed to fetch chat messages');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function displayChatMessages(messages) {
+        chatContent.innerHTML = '';
+        messages.forEach(message => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message');
+            messageDiv.classList.add(message.sender === 'coach' ? 'coach-message' : 'athlete-message');
+            messageDiv.textContent = message.content;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.classList.add('delete-button');
+            deleteButton.addEventListener('click', async () => {
+                await deleteChatMessage(message._id);
+            });
+
+            messageDiv.appendChild(deleteButton);
+            chatContent.appendChild(messageDiv);
+        });
+        chatContent.scrollTop = chatContent.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        const sender = viewToggle.checked ? 'coach' : 'athlete';
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: message, sender })
+            });
+            if (response.ok) {
+                chatInput.value = '';
+                await loadChatMessages();
+            } else {
+                console.error('Failed to send chat message');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function deleteChatMessage(id) {
+        try {
+            const response = await fetch(`/api/chat/${id}`, {
+                method: 'DELETE'
+            });
+            if (response.ok) {
+                await loadChatMessages();
+            } else {
+                console.error('Failed to delete chat message');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    sendButton.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', event => {
+        if (event.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+
+    // Load chat messages initially
+    loadChatMessages();
 });
