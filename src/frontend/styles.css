@@ -1,9 +1,10 @@
-/* styles.css */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -68,7 +69,7 @@ input:checked + .slider:before {
 
 .main-container {
     display: flex;
-    height: calc(100vh - 120px); /* Adjust height according to header and nav size */
+    flex: 1;
 }
 
 .sidebar {
@@ -80,6 +81,7 @@ input:checked + .slider:before {
     gap: 1em; /* Add gap between elements in the sidebar */
     height: 100%; /* Ensure sidebar fills the height */
     box-sizing: border-box; /* Include padding in height calculation */
+    justify-content: space-between; /* Space between elements */
 }
 
 #calendar {
@@ -117,10 +119,9 @@ input:checked + .slider:before {
 }
 
 .chat-box {
-    flex: 1; /* Allow chat box to fill remaining space */
     display: flex;
     flex-direction: column;
-    height: 400px; /* Increase the height of the chat box */
+    height: 400px; /* Fixed height for chat box */
 }
 
 .chat-box h2 {
@@ -134,6 +135,8 @@ input:checked + .slider:before {
     padding: 1em;
     margin-bottom: 1em;
     background-color: #fff; /* Ensure chat content background is white */
+    display: flex;
+    flex-direction: column; /* Ensure messages are stacked vertically */
 }
 
 .chat-message {
@@ -144,20 +147,16 @@ input:checked + .slider:before {
 }
 
 .coach-message {
-    background-color: #f1f1f1;
-    text-align: left;
-}
-
-.athlete-message {
     background-color: #d4edda;
     text-align: right;
 }
 
-.coach-message .delete-button {
-    right: 5px;
-    left: auto;
+.athlete-message {
+    background-color: #f1f1f1;
+    text-align: left;
 }
 
+.coach-message .delete-button,
 .athlete-message .delete-button {
     left: 5px;
     right: auto;
@@ -254,4 +253,13 @@ h3 {
     position: absolute;
     bottom: 10px;
     right: 10px;
+}
+
+#data-content,
+#coach-data-content {
+    white-space: pre-wrap; /* Preserve whitespace, including newlines */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
 }

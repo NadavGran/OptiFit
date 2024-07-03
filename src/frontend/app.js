@@ -175,20 +175,31 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function displayChatMessages(messages) {
         chatContent.innerHTML = '';
+        const isCoachView = viewToggle.checked;
+
         messages.forEach(message => {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('chat-message');
-            messageDiv.classList.add(message.sender === 'coach' ? 'coach-message' : 'athlete-message');
+            if ((isCoachView && message.sender === 'coach') || (!isCoachView && message.sender === 'athlete')) {
+                messageDiv.classList.add('coach-message');
+                messageDiv.style.textAlign = 'right';
+            } else {
+                messageDiv.classList.add('athlete-message');
+                messageDiv.style.textAlign = 'left';
+            }
             messageDiv.textContent = message.content;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.classList.add('delete-button');
-            deleteButton.addEventListener('click', async () => {
-                await deleteChatMessage(message._id);
-            });
+            // Add delete button only to the messages sent by the current view
+            if ((isCoachView && message.sender === 'coach') || (!isCoachView && message.sender === 'athlete')) {
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-button');
+                deleteButton.addEventListener('click', async () => {
+                    await deleteChatMessage(message._id);
+                });
+                messageDiv.appendChild(deleteButton);
+            }
 
-            messageDiv.appendChild(deleteButton);
             chatContent.appendChild(messageDiv);
         });
         chatContent.scrollTop = chatContent.scrollHeight;

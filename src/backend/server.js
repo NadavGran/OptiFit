@@ -1,4 +1,3 @@
-// server.js (backend)
 import express from 'express';
 import PouchDB from 'pouchdb';
 import cors from 'cors';
@@ -15,7 +14,7 @@ const app = express();
 const db = new PouchDB('mydb');
 
 const OURA_API_BASE_URL = 'https://api.ouraring.com/v2/usercollection/sleep';
-const OURA_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN_HERE'; // Replace with your actual token
+const OURA_ACCESS_TOKEN = 'C3QZGTRHH3G5EV4YFBX2RWO62W4VNTJX'; // Replace with your actual token
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,12 +24,19 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
+const getNextDay = (dateStr) => {
+  const date = new Date(dateStr);
+  date.setDate(date.getDate() + 1);
+  return date.toISOString().split('T')[0];
+};
+
 // Endpoint to get data for a specific date
 app.get('/api/data/:date', async (req, res) => {
   const date = req.params.date;
+  const nextDay = getNextDay(date);
   try {
     // Fetch data from Oura API
-    const ouraResponse = await fetch(`${OURA_API_BASE_URL}?start=${date}&end=${date}`, {
+    const ouraResponse = await fetch(`${OURA_API_BASE_URL}?start_date=${date}&end_date=${nextDay}`, {
       headers: {
         'Authorization': `Bearer ${OURA_ACCESS_TOKEN}`
       }
@@ -49,8 +55,23 @@ app.get('/api/data/:date', async (req, res) => {
       }
     }
 
-    // Update data in the database
-    const dataContent = ouraData.sleep ? `Sleep data for ${date}: ${JSON.stringify(ouraData.sleep)}` : 'No sleep data available';
+    // Extract data
+    let dataContent;
+    if (ouraData.data && ouraData.data.length > 0) {
+      const sleepData = ouraData.data[0];
+      const averageHRV = sleepData.average_hrv || 'N/A';
+      const readinessScore = sleepData.readiness ? sleepData.readiness.score : 'N/A';
+      const efficiency = sleepData.efficiency || 'N/A';
+
+      dataContent = `
+      Average HRV: ${averageHRV}\n
+      Readiness Score: ${readinessScore}\n
+      Sleep Efficiency: ${efficiency}
+      `;
+    } else {
+      dataContent = 'No sleep data available';
+    }
+
     const workoutContent = doc.workoutContent || 'No workout available';
     doc.dataContent = dataContent;
     doc.workoutContent = workoutContent;
