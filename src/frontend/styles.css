@@ -71,7 +71,7 @@ input:checked + .slider:before {
     display: flex;
     flex: 1;
 }
-
+/*beast*/
 .sidebar {
     width: 30%; /* Adjusted width */
     background-color: #f1f1f1;
